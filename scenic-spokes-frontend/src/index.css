@@ -1,0 +1,102 @@
+.root {
+  font-family: "Inter";
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+#window {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  border-left: 1rem solid white;
+  border-right: 1rem solid white;
+}
+
+h1 {
+  margin: 0;
+}
+
+.home-page,
+.about-page {
+  flex: 1;
+  min-height: 70dvh;
+  background-image: url("/alexey-malakhov-LZVkAbIw74Q-unsplash.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 6rem 1.5rem 0;
+  gap: 3rem;
+}
+
+.home-page h2,
+.about-page h2 {
+  color: white;
+  font-weight: 600;
+  margin: 0;
+  font-size: 2rem;
+}
+
+.home-page p,
+.about-page p {
+  color: white;
+  font-weight: 500;
+  font-size: 1.15rem;
+  max-width: 600px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .home-page,
+  .about-page {
+    padding: 3rem 1rem 1rem;
+    gap: 3rem;
+    height: 60dvh;
+  }
+
+  .home-page h2 {
+    font-size: 2rem;
+  }
+
+  .home-page p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page,
+  .about-page {
+    padding: 2rem 1rem 6rem;
+    gap: 3rem;
+    height: 50dvh;
+  }
+
+  .home-page h2 {
+    font-size: 1.75rem;
+  }
+
+  .home-page p {
+    font-size: 0.95rem;
+  }
+}
+
+#footer {
+  width: 100%;
+  height: 2.5rem;
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  background-color: white;
+}

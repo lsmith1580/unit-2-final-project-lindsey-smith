@@ -1,0 +1,37 @@
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.btn-primary {
+  background: #333;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #111;
+}
+
+.btn-secondary {
+  background: #ccc;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #bbb;
+}
+
+.btn-danger {
+  background: #e63946;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #b02a37;
+}
+
+/*consistent styling for all buttons in my application*/

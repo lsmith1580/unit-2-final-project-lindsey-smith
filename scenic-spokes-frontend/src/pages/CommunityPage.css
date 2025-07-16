@@ -1,0 +1,61 @@
+.community-page {
+  background-color: #24422c;
+}
+
+.community-page h1 {
+  color: white;
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 300px);
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.event-card {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+}
+
+.event-image {
+  width: 100%;
+  overflow: hidden;
+}
+
+.event-image img {
+  height: 180px;
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.event-content {
+  padding: 16px;
+}
+
+.event-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.event-info {
+  text-align: center;
+}
+
+.event-date {
+  color: #555;
+  font-size: 14px;
+}

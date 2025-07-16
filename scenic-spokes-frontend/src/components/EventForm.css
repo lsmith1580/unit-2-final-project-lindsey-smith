@@ -1,0 +1,29 @@
+.event-form-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.event-form-container h2 {
+  color: white;
+  text-align: center;
+}
+
+.event-form input,
+.event-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: "Inter";
+}
+
+.event-form textarea {
+  height: 100px;
+}
+
+.file-text {
+  color: white;
+}

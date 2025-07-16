@@ -1,0 +1,140 @@
+.active {
+  background-color: #c7892d;
+}
+
+.logo img {
+  display: block;
+}
+
+.logo-image {
+  height: 70px;
+  width: 80px;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.logo-image:hover {
+  animation: rotateImage 1s infinite;
+}
+
+@keyframes rotateImage {
+  0% {
+    transform: rotate3d(0, 0, 0, 0deg);
+  }
+
+  100% {
+    transform: rotate3d(0, 0, 1, 360deg);
+  }
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  width: 100%;
+}
+
+nav .title {
+  font-size: 2rem;
+  font-weight: 900;
+  text-decoration: none;
+  color: #24422c;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+nav ul {
+  display: flex;
+}
+
+.routes-dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: white;
+  padding: 0.5rem 0;
+  border-radius: 0.5rem;
+}
+
+nav ul li {
+  list-style: none;
+}
+
+nav ul li a {
+  display: block;
+  text-decoration: none;
+  color: #24422c;
+  padding: 0.75rem 1rem;
+  margin: 0 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 900;
+  font-size: 1.25rem;
+}
+
+nav ul li a:hover {
+  background-color: #c7892d;
+}
+
+nav .mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 2.25rem;
+  height: 2rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+nav .mobile-menu-toggle span {
+  height: 0.4rem;
+  width: 100%;
+  background-color: #24422c;
+  border-radius: 0.2rem;
+}
+
+@media (max-width: 480px) {
+  nav .mobile-menu-toggle {
+    display: flex;
+  }
+
+  nav .nav-links {
+    width: 100%;
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  nav ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  nav ul.open {
+    display: flex;
+    padding: 0;
+  }
+
+  nav ul li {
+    width: 100%;
+    text-align: center;
+  }
+
+  nav ul li a {
+    margin: 0.2rem 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .routes-dropdown-menu {
+    display: none;
+  }
+}
