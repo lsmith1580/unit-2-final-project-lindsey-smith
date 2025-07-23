@@ -42,6 +42,7 @@ public class AppUser {
     @JsonBackReference
     private final List<PackingList> packingLists = new ArrayList<>();
 
+
     //private Boolean isActive?
     //private Boolean isLoggedIn?
 
