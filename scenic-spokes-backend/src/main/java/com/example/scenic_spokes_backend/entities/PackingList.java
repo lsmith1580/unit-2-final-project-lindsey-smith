@@ -8,10 +8,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "packing_lists")
 public class PackingList {
@@ -21,7 +18,7 @@ public class PackingList {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    private String packingListName;
+    private String name;
 
     @ManyToOne
     @JsonManagedReference
