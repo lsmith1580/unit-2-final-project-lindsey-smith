@@ -15,7 +15,7 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE) //ensures Lombok doesn't generate a setter for id
-    private Long id;
+    private int id;
 
     private String firstName;
     private String lastName;

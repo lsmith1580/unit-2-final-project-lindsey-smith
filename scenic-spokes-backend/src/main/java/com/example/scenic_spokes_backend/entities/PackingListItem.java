@@ -11,7 +11,7 @@ public class PackingListItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private int id;
 
     private String itemName;
     private int quantity;
