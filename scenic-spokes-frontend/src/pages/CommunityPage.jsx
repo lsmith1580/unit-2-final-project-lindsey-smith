@@ -1,7 +1,7 @@
 import { useState } from "react";
-import "./CommunityPage.css";
 import EventCard from "../components/EventCard";
 import EventForm from "../components/EventForm";
+import "./CommunityPage.css";
 
 const defaultEvents = [
   {
