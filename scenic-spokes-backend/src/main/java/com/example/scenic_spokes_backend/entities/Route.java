@@ -2,22 +2,22 @@ package com.example.scenic_spokes_backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
+@Builder
 @Data
 @Entity
-@Table(name = "packing_list_items")
-public class PackingListItem {
+@Table(name = "routes")
+public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private int id;
 
-    private String itemName;
-    private int quantity;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonManagedReference
-    @JoinColumn(name = "packing_list_id")
-    private PackingList packingList;
+    @JoinColumn(name = "app_user_id", nullable = false)
+    private AppUser appUser;
+
+
 }
