@@ -11,6 +11,8 @@ if (!PUBLISHABLE_KEY) {
   throw new Error("Add your Clerk Publishable Key to the .env file");
 }
 
+console.log("Sign in url:", import.meta.env.VITE_CLERK_SIGN_IN_URL);
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>

@@ -67,8 +67,7 @@ nav ul li {
 }
 
 nav ul li a,
-.sign-in-button,
-.sign-up-button {
+.sign-in-button {
   display: block;
   text-decoration: none;
   color: #24422c;
@@ -81,8 +80,7 @@ nav ul li a,
 }
 
 nav ul li a:hover,
-.sign-in-button:hover,
-.sign-up-button:hover {
+.sign-in-button:hover {
   background-color: #c7892d;
 }
 

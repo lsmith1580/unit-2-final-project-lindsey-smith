@@ -4,7 +4,6 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
-  SignUpButton,
   UserButton,
 } from "@clerk/react-router";
 import "./Header.css";
@@ -36,7 +35,10 @@ const Header = () => {
           </div>
         </div>
         <div className="nav-links">
-          <ul className={menuOpen ? "open" : ""}>
+          <ul
+            className={menuOpen ? "open" : ""}
+            onClick={() => setMenuOpen(false)}
+          >
             <li>
               <NavLink to="/about">About</NavLink>
             </li>
@@ -48,16 +50,12 @@ const Header = () => {
             </li>
             <li>
               <SignedOut>
-                <div className="auth-buttons">
-                  <SignInButton>
-                    <span className="sign-in-button">Sign In</span>
-                  </SignInButton>
-                  <SignUpButton>
-                    <span className="sign-up-button">Sign Up</span>
-                  </SignUpButton>
-                </div>
+                <SignInButton withSignUp="true">
+                  <span className="sign-in-button">Sign In</span>
+                </SignInButton>
               </SignedOut>
               <SignedIn>
+                <Link to="/profile">Profile</Link>
                 <UserButton />
               </SignedIn>
             </li>
