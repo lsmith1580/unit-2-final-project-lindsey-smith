@@ -1,6 +1,7 @@
 package com.example.scenic_spokes_backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
@@ -33,10 +34,10 @@ public class AppUser {
     private String email;
 
     @OneToMany(mappedBy = "appUser")
-    @JsonBackReference
+    @JsonIgnore
     private final List<Event> events = new ArrayList<>();
 
     @OneToMany(mappedBy = "appUser")
-    @JsonBackReference
-    private final List<Route> routes = new ArrayList<>();
+    @JsonIgnore
+    private final List<MotorcycleRoute> routes = new ArrayList<>();
 }
