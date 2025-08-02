@@ -1,6 +1,5 @@
 package com.example.scenic_spokes_backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,8 +20,5 @@ public class Event {
     private String location;
     private String imageUrl;
 
-    @ManyToOne
-    @JsonManagedReference
-    @JoinColumn(name = "app_user_id")
-    private AppUser appUser;
+    private String clerkUserid;
 }
