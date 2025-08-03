@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Button from "./Button";
+import axios from "axios";
+import { toast } from "react-toastify";
 import "./EventForm.css";
 
 const EventForm = ({ addEvent }) => {
@@ -10,6 +12,8 @@ const EventForm = ({ addEvent }) => {
     description: "",
   }); //state variable for form data with default values of empty strings
 
+  const [imagePreview, setImagePreview] = useState(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -18,20 +22,29 @@ const EventForm = ({ addEvent }) => {
     }));
   }; //shows any changes in the values of the form while a user is updating it
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prevData) => ({
-          ...prevData,
-          image: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    const formDataObj = new FormData();
+    formDataObj.append("file", file);
+
+    try {
+      const response = await axios.post("/api/uploads/image", formDataObj, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const imageUrl = response.data;
+      setFormData((prev) => ({ ...prev, image: imageUrl }));
+      setImagePreview(imageUrl);
+      toast.success("Image uploaded!");
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      toast.error("Image upload failed. Please try again.");
     }
-  }; //function to handle image uploads, realized later that encoding images this way takes
-  // up way too much storage space, need to find a better way to handle uploading images
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
