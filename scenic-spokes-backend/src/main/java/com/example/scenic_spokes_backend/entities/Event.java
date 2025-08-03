@@ -2,6 +2,7 @@ package com.example.scenic_spokes_backend.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -16,9 +17,10 @@ public class Event {
 
     private String title;
     private String description;
-    private LocalDate eventDate;
-    private String location;
-    private String imageUrl;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate date;
+
+    private String image;
     private String clerkUserid;
 }
