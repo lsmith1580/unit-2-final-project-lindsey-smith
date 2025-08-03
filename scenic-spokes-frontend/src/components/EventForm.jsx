@@ -2,21 +2,24 @@ import { useState } from "react";
 import Button from "./Button";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useSignIn } from "@clerk/clerk-react";
 import "react-toastify/dist/ReactToastify.css";
 import "./EventForm.css";
 
-const EventForm = ({ addEvent }) => {
-  const { getToken } = useAuth();
+const EventForm = ({ editingEvent = null, onComplete }) => {
+  const { getToken, isSignedIn } = useAuth();
+  const { openSignIn } = useSignIn();
 
   const [formData, setFormData] = useState({
-    title: "",
-    date: "",
-    description: "",
+    title: editingEvent?.title || "",
+    date: editingEvent?.date || "",
+    description: editingEvent?.description || "",
   }); //state variable for form data with default values of empty strings
+  //editingEvent is used to determine whether the form is creating a new event or editing an existing one
+  //The ?. operator is used to access properties of editingEvent without throwing an error if null
 
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(editingEvent?.image || null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +45,12 @@ const EventForm = ({ addEvent }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!isSignedIn) {
+      toast.info("Please sign in to create or update an event.");
+      openSignIn();
+      return;
+    }
+
     try {
       const token = await getToken(); //need to get token from clerk to store clerk user id with event being created
       const formDataObj = new FormData(); //need to use formData object since sending an image file and not just JSON
@@ -54,15 +63,25 @@ const EventForm = ({ addEvent }) => {
         formDataObj.append("file", imageFile);
       }
 
-      await axios.post("/api/events", formDataObj, {
-        //using axios library for requests to the backend
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      if (editingEvent) {
+        await axios.put(`/api/events/${editingEvent.id}`, formDataObj, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        toast.success("Event updated!");
+      } else {
+        await axios.post("/api/events", formDataObj, {
+          //using axios library for requests to the backend
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
-      toast.success("Event created!"); //using the toastify library to create pop-ups to notify the user of successful form submission
+        toast.success("Event created!");
+      } //using the toastify library to create pop-ups to notify the user of successful form submission
       setFormData({ title: "", date: "", description: "" });
       setImageFile(null);
       setImagePreview(null);
@@ -74,7 +93,7 @@ const EventForm = ({ addEvent }) => {
 
   return (
     <div className="event-form-container">
-      <h2>Create a New Event</h2>
+      <h2>{editingEvent ? "Edit Event" : "Create a New Event"}</h2>
       <form onSubmit={handleSubmit} className="event-form">
         <input
           type="text"
@@ -112,7 +131,9 @@ const EventForm = ({ addEvent }) => {
           onChange={handleChange}
           required
         />
-        <Button type="submit">Add Event</Button>
+        <Button type="submit">
+          {editingEvent ? "Update Event" : "Add Event"}
+        </Button>
       </form>
     </div>
   );

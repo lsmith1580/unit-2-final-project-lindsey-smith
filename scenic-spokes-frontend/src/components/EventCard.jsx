@@ -1,18 +1,33 @@
 import { useState } from "react";
 import Button from "./Button";
 import ConfirmModal from "./ConfirmModal";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const EventCard = ({ event, onDelete, isUserEvent }) => {
+const EventCard = ({ event, onEdit, onDeleteComplete }) => {
+  const { getToken } = useAuth();
   const [showConfirm, setShowConfirm] = useState(false); //state variable to keep track of whether to show confirm modal
 
-  const handleDelete = () => {
-    onDelete(event.id);
-    setShowConfirm(false); //delete event by id and hide the confirm modal
+  const handleDelete = async () => {
+    try {
+      const token = await getToken();
+      await axios.delete(`/api/events/${event.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("Event deleted.");
+      setShowConfirm(false);
+      if (onDeleteComplete) onDeleteComplete(event.id);
+    } catch (error) {
+      console.error("Delete failed:", error);
+      toast.error("Failed to delete event.");
+    }
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(); //formats the date
+    return date.toLocaleDateString("en-US"); //formats the date
   };
 
   return (
@@ -28,8 +43,11 @@ const EventCard = ({ event, onDelete, isUserEvent }) => {
         <p>{formatDate(event.date)}</p>
         <p>{event.description}</p>
         {/*if user event allow the option to delete, if clicked show confirm modal*/}
-        {isUserEvent && (
+        {event.isUserEvent && (
           <div className="button-group">
+            <Button variant="secondary" onClick={() => onEdit(event)}>
+              Edit
+            </Button>
             <Button variant="danger" onClick={() => setShowConfirm(true)}>
               Delete
             </Button>
