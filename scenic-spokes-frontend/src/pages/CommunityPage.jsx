@@ -3,30 +3,30 @@ import EventCard from "../components/EventCard";
 import EventForm from "../components/EventForm";
 import "./CommunityPage.css";
 
-const defaultEvents = [
-  {
-    id: 1,
-    title: "85th Sturgis Motorcycle Rally",
-    date: "08-01-2025",
-    image: "/maxim-simonov-RUcDh47KhLk-unsplash.jpg",
-    description:
-      "Join one of the biggest motorcycle rallies in the United States!",
-  },
-  {
-    id: 2,
-    title: "Bike Night",
-    date: "06-17-2025",
-    image: "/dipankar-gogoi-ZxYIby8WSNI-unsplash.jpg",
-    description: "A fun evening meetup for bike enthusiasts.",
-  },
-  {
-    id: 3,
-    title: "Bike Show",
-    date: "07-10-2025",
-    image: "/ojo-toluwashe-_PcRWlbEqAE-unsplash.jpg",
-    description: "Show off your ride and check out others in the community.",
-  },
-];
+// const defaultEvents = [
+//   {
+//     id: 1,
+//     title: "85th Sturgis Motorcycle Rally",
+//     date: "08-01-2025",
+//     image: "/maxim-simonov-RUcDh47KhLk-unsplash.jpg",
+//     description:
+//       "Join one of the biggest motorcycle rallies in the United States!",
+//   },
+//   {
+//     id: 2,
+//     title: "Bike Night",
+//     date: "06-17-2025",
+//     image: "/dipankar-gogoi-ZxYIby8WSNI-unsplash.jpg",
+//     description: "A fun evening meetup for bike enthusiasts.",
+//   },
+//   {
+//     id: 3,
+//     title: "Bike Show",
+//     date: "07-10-2025",
+//     image: "/ojo-toluwashe-_PcRWlbEqAE-unsplash.jpg",
+//     description: "Show off your ride and check out others in the community.",
+//   },
+// ];
 
 const CommunityPage = () => {
   const [userEvents, setUserEvents] = useState([]);

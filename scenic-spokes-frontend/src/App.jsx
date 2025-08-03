@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import "./App.css";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import CommunityPage from "./pages/CommunityPage";
@@ -8,6 +7,8 @@ import RouteMap from "./components/RouteMap";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import SignInPage from "./pages/SignInPage";
+import { ToastContainer } from "react-toastify";
+import "./App.css";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
+      <ToastContainer />
     </div>
   );
 }

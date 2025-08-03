@@ -18,7 +18,10 @@ const EventCard = ({ event, onDelete, isUserEvent }) => {
   return (
     <div className="event-card">
       <div className="event-image">
-        <img src={event.image} alt={event.title} />
+        <img
+          src={event.image || "/maxim-simonov-RUcDh47KhLk-unsplash.jpg"}
+          alt={event.title}
+        />
       </div>
       <div className="event-info">
         <h2>{event.title}</h2>
