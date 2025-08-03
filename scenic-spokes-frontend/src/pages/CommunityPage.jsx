@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
 import EventForm from "../components/EventForm";
+import { useAuth } from "@clerk/clerk-react";
+import { toast } from "react-toastify";
 import "./CommunityPage.css";
 
 // const defaultEvents = [
@@ -29,15 +31,28 @@ import "./CommunityPage.css";
 // ];
 
 const CommunityPage = () => {
-  const [userEvents, setUserEvents] = useState([]);
-  const [lastEventId, setLastEventId] = useState(3); // default max id from defaultEvents
+  const { getToken, isSignedIn } = useAuth();
+  const [events, setEvents] = useState([]);
+  const [editingEvent, setEditingEvent] = useState(null);
 
-  const addEvent = (newEvent) => {
-    const newId = lastEventId + 1;
-    const eventWithId = { ...newEvent, id: newId };
-    setUserEvents((prevEvents) => [...prevEvents, eventWithId]);
-    setLastEventId(newId);
+  const getEvents = async () => {
+    try {
+      const token = isSignedIn ? await getToken() : null;
+
+      const response = await axios.get("/api/events", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+
+      setEvents(response.data);
+    } catch (error) {
+      console.error("Failed to get events: ", error);
+      toast.error("Could not load events.");
+    }
   };
+
+  useEffect(() => {
+    getEvents();
+  }, []);
 
   const editEvent = (updatedEvent) => {
     setUserEvents((prevEvents) =>

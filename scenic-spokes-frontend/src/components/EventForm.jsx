@@ -26,37 +26,16 @@ const EventForm = ({ addEvent }) => {
     }));
   }; //shows any changes in the values of the form while a user is updating it
 
-  // const handleImageUpload = async (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-
-  //   const formDataObj = new FormData();
-  //   formDataObj.append("file", file);
-
-  //   try {
-  //     const response = await axios.post("/api/uploads/image", formDataObj, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-
-  //     const imageUrl = response.data;
-  //     setFormData((prev) => ({ ...prev, image: imageUrl }));
-  //     setImagePreview(imageUrl);
-  //     toast.success("Image uploaded!");
-  //   } catch (error) {
-  //     console.error("Image upload failed:", error);
-  //     toast.error("Image upload failed. Please try again.");
-  //   }
-  // };
-
   const handleImageSelection = (e) => {
-    const file = e.target.files[0];
+    //function that gets and stores selected image file for use later in handleSubmit function
+    const file = e.target.files[0]; //and creates preview image url
     setImageFile(file);
 
     if (file) {
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
+    } else {
+      setImagePreview(null);
     }
   };
 
@@ -64,8 +43,8 @@ const EventForm = ({ addEvent }) => {
     e.preventDefault();
 
     try {
-      const token = await getToken();
-      const formDataObj = new FormData();
+      const token = await getToken(); //need to get token from clerk to store clerk user id with event being created
+      const formDataObj = new FormData(); //need to use formData object since sending an image file and not just JSON
 
       formDataObj.append("title", formData.title);
       formDataObj.append("description", formData.description);
@@ -76,13 +55,14 @@ const EventForm = ({ addEvent }) => {
       }
 
       await axios.post("/api/events", formDataObj, {
+        //using axios library for requests to the backend
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
 
-      toast.success("Event created!");
+      toast.success("Event created!"); //using the toastify library to create pop-ups to notify the user of successful form submission
       setFormData({ title: "", date: "", description: "" });
       setImageFile(null);
       setImagePreview(null);

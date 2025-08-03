@@ -4,6 +4,7 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
+  SignOutButton,
   UserButton,
 } from "@clerk/react-router";
 import "./Header.css";
@@ -55,8 +56,12 @@ const Header = () => {
                 </SignInButton>
               </SignedOut>
               <SignedIn>
-                <Link to="/profile">Profile</Link>
-                <UserButton />
+                <div className="signed-in-buttons">
+                  <SignOutButton>
+                    <span className="sign-out-button">Sign Out</span>
+                  </SignOutButton>
+                  <UserButton />
+                </div>
               </SignedIn>
             </li>
           </ul>
