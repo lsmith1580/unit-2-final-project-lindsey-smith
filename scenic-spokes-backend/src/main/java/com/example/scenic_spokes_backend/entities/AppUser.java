@@ -1,6 +1,5 @@
 package com.example.scenic_spokes_backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,6 +9,8 @@ import java.util.List;
 @Builder
 @Data //@Data a part of Lombok library, generates common boilerplate code when you run the program
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE) //forces the use of builder for object creation
 @Table(name = "app_users")
 public class AppUser {
 
@@ -27,17 +28,17 @@ public class AppUser {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "username", unique = true, nullable = false) //ensures no duplicate usernames in database and cannot be null
+    @Column(name = "username", unique = true) //ensures no duplicate usernames in database and cannot be null
     private String username;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private final List<Event> events = new ArrayList<>();
 
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private final List<MotorcycleRoute> routes = new ArrayList<>();
 }
