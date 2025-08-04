@@ -5,18 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EventDTO {
+public class MotorcycleRouteDTO {
     private int id;
-    private String title;
-    private String description;
-    private LocalDate date;
-    private String image;
-    private boolean userEvent;
-    private int routeId;
+    private String name;
+    private String startPoint;
+    private String endPoint;
+    private String routeData;
 }

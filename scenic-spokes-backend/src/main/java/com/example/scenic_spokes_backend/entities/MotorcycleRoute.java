@@ -3,7 +3,6 @@ package com.example.scenic_spokes_backend.entities;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,5 @@ public class MotorcycleRoute {
     private String clerkUserId;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<Event> events = new ArrayList<>();
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 
 @Builder
@@ -30,6 +29,5 @@ public class Event {
 
     @ManyToOne
     @JoinColumn(name = "route_id")
-    @JsonBackReference
     private MotorcycleRoute route;
 }
