@@ -1,12 +1,16 @@
 package com.example.scenic_spokes_backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+@Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "events")
 public class Event {
@@ -23,4 +27,9 @@ public class Event {
 
     private String image;
     private String clerkUserid;
+
+    @ManyToOne
+    @JoinColumn(name = "route_id")
+    @JsonBackReference
+    private MotorcycleRoute route;
 }

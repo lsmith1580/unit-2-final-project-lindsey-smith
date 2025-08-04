@@ -17,5 +17,5 @@ public class EventDTO {
     private String description;
     private LocalDate date;
     private String image;
-    private boolean isUserEvent;
+    private boolean userEvent;
 }
