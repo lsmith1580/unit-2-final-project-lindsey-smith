@@ -18,5 +18,4 @@ public class EventDTO {
     private LocalDate date;
     private String image;
     private boolean userEvent;
-    private int routeId;
 }

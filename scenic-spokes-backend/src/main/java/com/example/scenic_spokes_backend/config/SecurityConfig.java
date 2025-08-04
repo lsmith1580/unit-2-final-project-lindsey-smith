@@ -16,7 +16,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll() //anyone can see created events
                         .requestMatchers("/api/events/**").authenticated() //using any other event endpoint requires authentication
-                        .requestMatchers("/api/routes/**").authenticated() //all route endpoints require authentication
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

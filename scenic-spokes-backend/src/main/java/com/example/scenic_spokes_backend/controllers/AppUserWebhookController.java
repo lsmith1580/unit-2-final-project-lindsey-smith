@@ -4,6 +4,7 @@ import com.example.scenic_spokes_backend.dto.ClerkWebhookUserDTO;
 import com.example.scenic_spokes_backend.entities.AppUser;
 import com.example.scenic_spokes_backend.repositories.AppUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/webhooks/clerk")
 @RequiredArgsConstructor
+@Slf4j //annotation from lombok that enables logging
 public class AppUserWebhookController {
 
     private final AppUserRepository appUserRepository;
@@ -21,29 +23,83 @@ public class AppUserWebhookController {
     @PostMapping
     //returning void because you don't need to return a body for webhooks
     public ResponseEntity<Void> handleClerkWebhook(@RequestBody ClerkWebhookUserDTO webhook) {
-        if (!webhook.getType().startsWith("user.")) { //clerk sends events like user.created and user.updated so any time one of those events occur,
-            return ResponseEntity.ok().build();         //it will trigger an update to either create the user or update an existing user
+        //to log what was received from clerk
+        log.info("Received webhook from Clerk: {}", webhook.getType());
+
+        try { //if not user event, return
+            if (!webhook.getType().startsWith("user.")) {
+                return ResponseEntity.ok().build();
+            }
+
+            //get the user data from the webhook
+            ClerkWebhookUserDTO.ClerkUserData userData = webhook.getData();
+
+            //validation for user data
+            if (userData == null || userData.getId() == null || userData.getId().trim().isEmpty()) {
+                log.warn("Webhook has invalid user data");
+                return ResponseEntity.ok().build();
+            }
+
+            //create or update the user
+            saveOrUpdateUser(userData);
+
+            log.info("Successfully processed user: {}", userData.getId());
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            //log it if anything goes wrong
+            log.error("Error processing webhook: {}", e.getMessage());
+            return ResponseEntity.ok().build(); //return success to prevent clerk from retrying
+        }
+    }
+
+    // method to create new user or update existing user
+    private void saveOrUpdateUser(ClerkWebhookUserDTO.ClerkUserData userData) {
+        String clerkId = userData.getId();
+        String username = userData.getUsername();
+        String firstName = userData.getFirst_name();
+        String lastName = userData.getLast_name();
+        String email = getEmailFromUserData(userData);
+
+        //check if user already exists
+        Optional<AppUser> existingUser = appUserRepository.findByClerkId(clerkId);
+
+        AppUser user;
+        if (existingUser.isPresent()) {
+            //update information if user exists
+            user = existingUser.get();
+            user.setUsername(username);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setEmail(email);
+            log.info("Updating existing user: {}", clerkId);
+        } else {
+            //create new user if user doesn't exist
+            user = AppUser.builder()
+                    .clerkId(clerkId)
+                    .username(username)
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .email(email)
+                    .build();
+            log.info("Creating new user: {}", clerkId);
         }
 
-        ClerkWebhookUserDTO.ClerkUserData data = webhook.getData();
+        //save to database
+        appUserRepository.save(user);
+    }
 
-        String clerkId = data.getId();
-        String username = data.getUsername();
-        String firstName = data.getFirst_name();
-        String lastName = data.getLast_name();
-        String email = data.getEmail_addresses() != null && !data.getEmail_addresses().isEmpty()
-                ? data.getEmail_addresses().getFirst().getEmail_address() //since clerk's json stores email address information in an array and I only need to access the email address itself
-                : "";
-        Optional<AppUser> existingAppUser = appUserRepository.findByClerkId(clerkId);
-        AppUser appUser = existingAppUser.orElseGet(AppUser::new); //checks to see if the user already exists, if they do return the existing user, if not return a new user
+    //method to get email from clerk's json since it contains nested data
+    private String getEmailFromUserData(ClerkWebhookUserDTO.ClerkUserData userData) {
+        //clerk stores emails in an array, only want the first one
+        if (userData.getEmail_addresses() != null &&
+                !userData.getEmail_addresses().isEmpty()) {
 
-        appUser.setClerkId(clerkId);
-        appUser.setUsername(username);
-        appUser.setFirstName(firstName);
-        appUser.setLastName(lastName);
-        appUser.setEmail(email);
-
-        appUserRepository.save(appUser);
-        return ResponseEntity.ok().build();
+            var firstEmail = userData.getEmail_addresses().getFirst();
+            if (firstEmail != null && firstEmail.getEmail_address() != null) {
+                return firstEmail.getEmail_address();
+            }
+        }
+        return ""; //return empty string if no email found
     }
 }

@@ -1,6 +1,5 @@
 package com.example.scenic_spokes_backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,9 +24,8 @@ public class Event {
     private LocalDate date;
 
     private String image;
-    private String clerkUserid;
 
     @ManyToOne
-    @JoinColumn(name = "route_id")
-    private MotorcycleRoute route;
+    @JoinColumn(name = "user_id")
+    private AppUser user;
 }
