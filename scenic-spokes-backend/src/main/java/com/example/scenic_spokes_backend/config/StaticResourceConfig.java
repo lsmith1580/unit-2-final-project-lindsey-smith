@@ -11,4 +11,4 @@ public class StaticResourceConfig implements WebMvcConfigurer {
         reg.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:uploads/");
     }
-}
+} //need this configuration to tell spring where to put and find uploaded image files from the frontend

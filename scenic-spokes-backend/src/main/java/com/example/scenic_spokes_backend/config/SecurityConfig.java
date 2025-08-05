@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    @Order(1)
+    @Order(1) //had to create a separate filter chain to enable clerk webhooks to work correctly
     public SecurityFilterChain webhookChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/api/clerk/webhook")   // only this exact path

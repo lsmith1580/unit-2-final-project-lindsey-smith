@@ -25,13 +25,6 @@ public class AppUserWebhookController {
     //returning void because you don't need to return a body for webhooks
     public ResponseEntity<Void> handleClerkWebhook(@RequestBody ClerkWebhookUserDTO webhook, HttpServletRequest request) {
         //to log what was received from clerk
-
-        log.info("=== WEBHOOK HEADERS ===");
-        request.getHeaderNames().asIterator().forEachRemaining(headerName ->
-                log.info("{}: {}", headerName, request.getHeader(headerName))
-        );
-        log.info("=====================");
-
         log.info("Received webhook from Clerk: {}", webhook.getType());
 
         try { //if not user event, return
