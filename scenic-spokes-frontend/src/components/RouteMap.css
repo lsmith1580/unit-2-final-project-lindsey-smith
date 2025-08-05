@@ -1,181 +1,55 @@
-.route-map {
-  background-image: url("/sturgis-map.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center center;
-  min-height: 82dvh;
+.route-header {
   display: flex;
-  justify-content: space-between;
-  padding: 1rem;
-  gap: 1rem;
-}
-
-.mobile-route-map-image {
-  display: none;
-}
-
-.sidebar {
-  flex-shrink: 0;
-  min-width: 250px;
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.stops-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 30px;
-}
-
-.stops-table th {
-  text-align: left;
-  background-color: #c7892d;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 900;
-  font-size: 1.25rem;
-  color: #24422c;
-  display: inline-block;
-}
-
-.details-link {
-  display: inline-block;
-  color: #24422c;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 900;
-  font-size: 1.25rem;
-  text-decoration: none;
-  background-color: #c7892d;
-  margin: 0.25rem 0;
-}
-
-.details-link:hover {
-  background-color: #a86d23;
-}
-
-.packing-list-area {
-  flex-shrink: 0;
-  min-width: 300px;
-  background-color: #c7892d;
-  padding: 1rem;
-  border-radius: 1rem;
-}
-
-.packing-list-area h2 {
-  color: #24422c;
-  margin-bottom: 1rem;
-}
-
-.packing-list {
-  list-style: none;
-  padding: 0;
-}
-
-.packing-list li {
-  display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
-  color: #24422c;
-  font-weight: 700;
 }
 
-.packing-list li div {
+.controls {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.packing-input {
-  margin-top: 1rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.packing-input input {
-  flex-grow: 1;
+.controls input {
+  flex: 1 1 200px;
   padding: 0.5rem;
-  border: 2px solid #24422c;
-  border-radius: 0.5rem;
-  font-size: 1rem;
+  max-width: 260px;
 }
 
-@media (max-width: 768px) {
-  .route-map {
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-    gap: 1rem;
-    background-image: none;
-    background-color: #24422c;
-  }
+.stats {
+  font-weight: 600;
+  text-align: center;
+}
 
-  .mobile-route-map-image {
-    display: block;
-    background-image: url("/sturgis-map-mobile.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    height: 70vh;
-    width: 100%;
-    border-radius: 1rem;
-    margin-top: 1rem;
-  }
+.leaflet-container {
+  height: 70vh;
+}
 
-  .sidebar {
-    min-width: 100%;
-    padding: 1rem;
-    border-radius: 1rem;
-    max-width: 500px;
-    width: 100%;
-  }
-
-  .packing-list-area {
-    min-width: 100%;
-    padding: 1rem;
-    border-radius: 1rem;
-    max-width: 500px;
-    width: 100%;
-  }
-
-  .packing-input input {
-    flex: 1;
-  }
-
-  .stops-table {
-    border-spacing: 10px;
-  }
-
-  .details-link {
-    font-size: 1.1rem;
-    padding: 0.5rem 0.75rem;
-  }
-
-  .packing-list li {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .packing-list li div {
-    flex-wrap: wrap;
+.spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 0.5rem;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
-  .route-map {
+@media (max-width: 640px) {
+  .controls {
     flex-direction: column;
-    background-image: none;
-    background-color: #24422c;
+    align-items: stretch;
   }
-
-  .mobile-route-map-image {
-    display: block;
-    background-image: url("/sturgis-map-mobile.png");
-    height: 128dvh;
-    width: 100%;
-    margin-top: 1rem;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
+  .route-map {
+    height: 50vh;
   }
 }

@@ -1,181 +1,137 @@
-import { Link } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { MapContainer, TileLayer, Polyline, useMap } from "react-leaflet";
+import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
+import axios from "axios";
+import haversine from "haversine-distance";
+import { toast } from "react-toastify";
 import Button from "./Button";
-import { stops } from "../shared/stops";
-import ConfirmModal from "./ConfirmModal";
+import "leaflet/dist/leaflet.css";
 import "./RouteMap.css";
 
+const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+const LINE_STYLE = { color: "#0077ff", weight: 5 };
+const GOOGLE_LIBS = ["places"];
+
+function FitToRoute({ coords }) {
+  //had to create helper function to enable the ability to fit to route
+  const map = useMap();
+  useEffect(() => {
+    if (!map || !Array.isArray(coords) || coords.length < 2) return;
+    const bounds = L.latLngBounds(coords.map(([lat, lng]) => [lat, lng]));
+    requestAnimationFrame(() => {
+      map.invalidateSize();
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15, animate: true });
+    });
+  }, [map, coords]);
+  return null;
+}
+
 const RouteMap = () => {
-  const [packingList, setPackingList] = useState([]);
-  const [newItem, setNewItem] = useState("");
-  const [editingIndex, setEditingIndex] = useState(null); //variable to keep track of which item is being edited
-  const [editingValue, setEditingValue] = useState("");
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [itemToDeleteIndex, setItemToDeleteIndex] = useState(null);
+  const startRef = useRef(null); //google autocomplete refs
+  const endRef = useRef(null);
+  const [coords, setCoords] = useState([]); //coordinates for leaflet
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const isInitialMount = useRef(true);
+  const { isLoaded } = useJsApiLoader({
+    //for loading google places
+    googleMapsApiKey: GOOGLE_KEY,
+    libraries: GOOGLE_LIBS,
+  });
 
-  useEffect(() => {
-    const storedList = localStorage.getItem("packingList");
-    if (storedList) {
-      setPackingList(JSON.parse(storedList));
+  const handleGenerate = async () => {
+    if (loading) return;
+    if (!startRef.current || !endRef.current) return;
+
+    const start = startRef.current.getPlace();
+    const end = endRef.current.getPlace();
+    if (!start?.geometry || !end?.geometry) {
+      return toast.error("Select both start & end");
     }
-  }, []);
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      //keeps this useEffect from running on initial mount and saving the empty dependency array back to local storage
-      isInitialMount.current = false; //and overwriting any saved data
-      return;
+    const [startLat, startLng] = [
+      start.geometry.location.lat(),
+      start.geometry.location.lng(),
+    ];
+    const [endLat, endLng] = [
+      end.geometry.location.lat(),
+      end.geometry.location.lng(),
+    ];
+
+    const meters = haversine(
+      //added haversine-distance so don't have to calculate distance manually
+      { lat: startLat, lng: startLng },
+      { lat: endLat, lng: endLng }
+    );
+    const km = meters / 1000;
+
+    if (km > 900) {
+      toast.error("TomTom 'thrilling' routes are limited to 900 km.");
+      return; // validation since tomtom only allows up to 900 km on thrilling route generation
     }
+
+    setLoading(true);
     try {
-      localStorage.setItem("packingList", JSON.stringify(packingList));
-    } catch (e) {
-      if (e.name === "QuotaExceededError") {
-        console.error("LocalStorage quota exceeded.");
-      }
+      const { data } = await axios.get("/api/routes/generate", {
+        params: { startLat, startLng, endLat, endLng },
+      });
+      setCoords(data.coordinates);
+      setStats({
+        km: Number(data.distanceKm), //forced Number conversion to avoid type errors with backend
+        min: Number(data.estimatedTimeMin),
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("Route generation failed");
+    } finally {
+      setLoading(false);
     }
-  }, [packingList]);
-
-  const addItem = () => {
-    if (newItem.trim() !== "") {
-      setPackingList([...packingList, newItem]);
-      setNewItem("");
-    } else {
-      return;
-    }
-  };
-
-  const deleteItem = (index) => {
-    const updatedList = packingList.filter((_, i) => i !== index);
-    setPackingList(updatedList);
-  };
-
-  const handleConfirmDelete = () => {
-    if (itemToDeleteIndex !== null) {
-      deleteItem(itemToDeleteIndex);
-      setShowConfirm(false);
-      setItemToDeleteIndex(null);
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setShowConfirm(false);
-    setItemToDeleteIndex(null);
-  };
-
-  const startEditing = (index, value) => {
-    setEditingIndex(index);
-    setEditingValue(value);
-  };
-
-  const saveEdit = (index) => {
-    const trimmedValue = editingValue.trim();
-    if (trimmedValue === "") {
-      setEditingIndex(null);
-      setEditingValue("");
-      return;
-    }
-
-    const updatedList = [...packingList];
-    updatedList[index] = trimmedValue;
-    setPackingList(updatedList);
-    setEditingIndex(null);
-    setEditingValue("");
   };
 
   return (
-    <div className="route-map">
-      <div className="sidebar">
-        <table className="stops-table">
-          <thead>
-            <tr>
-              <th>
-                <h2>Stops</h2>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {stops.map((stop) => (
-              <tr key={stop.id}>
-                <td>
-                  <Link to={`/routes/${stop.id}`} className="details-link">
-                    {stop.name}
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="packing-list-area">
-        <h2>Packing List</h2>
-
-        {packingList.length === 0 ? (
-          <p>No items yet — add something!</p>
-        ) : (
-          <ul className="packing-list">
-            {packingList.map((item, index) => (
-              <li key={index}>
-                {editingIndex === index ? (
-                  <input
-                    value={editingValue}
-                    onChange={(e) => setEditingValue(e.target.value)}
-                    onBlur={() => saveEdit(index)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") saveEdit(index);
-                    }}
-                    autoFocus
-                  />
-                ) : (
-                  <>
-                    {item}
-                    <div>
-                      <Button
-                        variant="secondary"
-                        onClick={() => startEditing(index, item)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => {
-                          setItemToDeleteIndex(index);
-                          setShowConfirm(true);
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <div className="packing-input">
-          <input
-            type="text"
-            placeholder="Add item..."
-            value={newItem}
-            onChange={(e) => setNewItem(e.target.value)}
-          />
-          <Button onClick={addItem}>Add</Button>
+    <div className="route-map-wrapper">
+      {/* {autocomplete component from google maps api} */}
+      {isLoaded && (
+        <div className="route-header">
+          <div className="controls">
+            <Autocomplete onLoad={(a) => (startRef.current = a)}>
+              <input placeholder="Start" />
+            </Autocomplete>
+            <Autocomplete onLoad={(a) => (endRef.current = a)}>
+              <input placeholder="Destination" />
+            </Autocomplete>
+            <Button onClick={handleGenerate} disabled={loading}>
+              {loading ? (
+                <>
+                  Generating… <span className="spinner" />
+                </>
+              ) : (
+                "Generate Thrilling Route"
+              )}
+            </Button>
+          </div>
+          {/* renders route info after it's been received from the backend */}
+          {stats && Number.isFinite(stats.min) && (
+            <p className="stats">
+              {(stats.km * 0.621371).toFixed(1)} mi&nbsp;•&nbsp;
+              {Math.floor(stats.min / 60)} h&nbsp;
+              {Math.round(stats.min % 60)} min
+            </p>
+          )}
         </div>
+      )}
 
-        {/* Show confirmation modal only when triggered */}
-        {showConfirm && (
-          <ConfirmModal
-            message="Are you sure you want to delete this item?"
-            onConfirm={handleConfirmDelete}
-            onCancel={handleCancelDelete}
-          />
+      {/* map container, tile layer, and polyline components from leaflet */}
+      <MapContainer className="route-map" center={[39.1, -94.57]} zoom={7}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="&copy; OpenStreetMap contributors"
+        />
+        {coords.length > 0 && (
+          <Polyline positions={coords} pathOptions={LINE_STYLE} />
         )}
-      </div>
-
-      <div className="mobile-route-map-image"></div>
+        <FitToRoute coords={coords} />
+      </MapContainer>
     </div>
   );
 };

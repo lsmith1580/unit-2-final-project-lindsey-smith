@@ -1,12 +1,16 @@
-import { Link } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignOutButton,
+  UserButton,
+} from "@clerk/react-router";
 import "./Header.css";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hoveringRoutesLink, setHoveringRoutesLink] = useState(false);
-  const [hoveringRoutesDropdown, setHoveringRoutesDropdown] = useState(false);
 
   return (
     <header className="header">
@@ -32,38 +36,33 @@ const Header = () => {
           </div>
         </div>
         <div className="nav-links">
-          <ul className={menuOpen ? "open" : ""}>
+          <ul
+            className={menuOpen ? "open" : ""}
+            onClick={() => setMenuOpen(false)}
+          >
             <li>
               <NavLink to="/about">About</NavLink>
             </li>
             <li>
-              <NavLink
-                onMouseEnter={() => setHoveringRoutesLink(true)}
-                onMouseLeave={() => setHoveringRoutesLink(false)}
-                to="/route-map"
-              >
-                Sturgis Route Map
-              </NavLink>
-              {(hoveringRoutesLink || hoveringRoutesDropdown) && (
-                <ul
-                  className="routes-dropdown-menu"
-                  onMouseEnter={() => setHoveringRoutesDropdown(true)}
-                  onMouseLeave={() => setHoveringRoutesDropdown(false)}
-                >
-                  <li>
-                    <NavLink to="/routes/1">Sturgis Motorcycle Museum</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/routes/2">Wonderland Cave</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/routes/3">Black Elk Peak</NavLink>
-                  </li>
-                </ul>
-              )}
+              <NavLink to="/route-map">Plan Route</NavLink>
             </li>
             <li>
               <NavLink to="/community">Community Events</NavLink>
+            </li>
+            <li>
+              <SignedOut>
+                <SignInButton withSignUp="true">
+                  <span className="sign-in-button">Sign In</span>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <div className="signed-in-buttons">
+                  <SignOutButton>
+                    <span className="sign-out-button">Sign Out</span>
+                  </SignOutButton>
+                  <UserButton />
+                </div>
+              </SignedIn>
             </li>
           </ul>
         </div>

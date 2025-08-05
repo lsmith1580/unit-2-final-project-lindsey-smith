@@ -66,7 +66,9 @@ nav ul li {
   list-style: none;
 }
 
-nav ul li a {
+nav ul li a,
+.sign-in-button,
+.sign-out-button {
   display: block;
   text-decoration: none;
   color: #24422c;
@@ -75,10 +77,19 @@ nav ul li a {
   border-radius: 0.5rem;
   font-weight: 900;
   font-size: 1.25rem;
+  cursor: pointer;
 }
 
-nav ul li a:hover {
+nav ul li a:hover,
+.sign-in-button:hover,
+.sign-out-button:hover {
   background-color: #c7892d;
+}
+
+.signed-in-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 nav .mobile-menu-toggle {
@@ -136,5 +147,15 @@ nav .mobile-menu-toggle span {
 
   .routes-dropdown-menu {
     display: none;
+  }
+
+  .signed-in-buttons {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .sign-out-button {
+    width: 100%;
   }
 }

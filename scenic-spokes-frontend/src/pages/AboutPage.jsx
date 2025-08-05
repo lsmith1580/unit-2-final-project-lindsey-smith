@@ -1,18 +1,18 @@
-
-
-
 const AboutPage = () => {
-    return (
-        <div className="about-page">
-            <h2>About Us</h2>
-            <p>At Scenic Spokes, we’re passionate riders who believe the journey is just as important as the destination. 
-               Our mission is simple: to guide fellow motorcycle enthusiasts along the most breathtaking, unforgettable route 
-               to the legendary Sturgis Motorcycle Rally. We’ve carefully curated every twist, turn, and stop to showcase the 
-               best landscapes, hidden gems, and biker-friendly spots along the way. Whether you’re a seasoned road warrior or 
-               hitting the open road for the first time, we’re here to help you make every mile count. Join us, and experience 
-               the ride that turns a trip to Sturgis into a true adventure.</p>
-        </div>
-    );
+  return (
+    <div className="about-page">
+      <h2>About Us</h2>
+      <p>
+        At Scenic Spokes, we believe every ride should be an adventure. Whether
+        you're headed to Sturgis or just chasing curves, our route generator
+        helps you find the most thrilling roads that are packed with hills,
+        twists, and scenic views. You can also explore and share motorcycle
+        events with the community. Sign in to create your own events and connect
+        with fellow riders. From planning your next ride to discovering what’s
+        happening nearby, Scenic Spokes makes the journey unforgettable.
+      </p>
+    </div>
+  );
 };
 
 export default AboutPage;

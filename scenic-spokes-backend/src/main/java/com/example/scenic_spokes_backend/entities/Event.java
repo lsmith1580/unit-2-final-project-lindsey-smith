@@ -1,31 +1,31 @@
 package com.example.scenic_spokes_backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "events")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long id;
+    private int id;
 
     private String title;
     private String description;
-    private LocalDate eventDate;
-    private String location;
-    private String imageUrl;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate date;
+
+    private String image;
 
     @ManyToOne
-    @JsonManagedReference
     @JoinColumn(name = "app_user_id")
     private AppUser appUser;
 }
