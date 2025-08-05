@@ -70,7 +70,9 @@ npm install
 3. **Create a .env file**
 
 VITE_GOOGLE_API_KEY=your_google_maps_api_key
+
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+
 VITE_BACKEND_URL=http://localhost:8080
 
 4. **Start the frontend**
