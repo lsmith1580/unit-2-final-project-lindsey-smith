@@ -35,16 +35,20 @@ Scenic Spokes is a full-stack web application designed for motorcycle enthusiast
 1. **Clone the repository**  
 
 git clone https://github.com/lsmith1580/unit-2-final-project-lindsey-smith.git
+
 cd scenic-spokes-backend
 
 2. **Configure environment variables**  
 Create an `application.properties` file:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/scenic_spokes
+
 spring.datasource.username=your_username
+
 spring.datasource.password=your_password
 
 spring.jpa.hibernate.ddl-auto=update
+
 spring.security.oauth2.resourceserver.jwt.issuer-uri=https://your-clerk-instance.clerk.accounts.dev
 
 tomtom.api.key=your_tomtom_api_key
