@@ -35,16 +35,20 @@ Scenic Spokes is a full-stack web application designed for motorcycle enthusiast
 1. **Clone the repository**  
 
 git clone https://github.com/lsmith1580/unit-2-final-project-lindsey-smith.git
+
 cd scenic-spokes-backend
 
 2. **Configure environment variables**  
 Create an `application.properties` file:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/scenic_spokes
+
 spring.datasource.username=your_username
+
 spring.datasource.password=your_password
 
 spring.jpa.hibernate.ddl-auto=update
+
 spring.security.oauth2.resourceserver.jwt.issuer-uri=https://your-clerk-instance.clerk.accounts.dev
 
 tomtom.api.key=your_tomtom_api_key
@@ -53,7 +57,7 @@ tomtom.api.key=your_tomtom_api_key
    
 ./mvnw spring-boot:run
 
-###Frontend Setup (React + Vite)
+### Frontend Setup (React + Vite)
 
 1. **Navigate to the frontend directory**
 
@@ -66,7 +70,9 @@ npm install
 3. **Create a .env file**
 
 VITE_GOOGLE_API_KEY=your_google_maps_api_key
+
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+
 VITE_BACKEND_URL=http://localhost:8080
 
 4. **Start the frontend**
@@ -83,7 +89,7 @@ https://miro.com/app/board/uXjVIzJXSbA=/?share_link_id=450465184892
 
 https://www.figma.com/board/Y7dF4uvN19IQPmqjDj2gIG/ER-Diagram---Scenic-Spokes?node-id=0-1&t=ebIKvsEMSKiLjzsC-1
 
-##Unsolved Problems / Future Features
+## Unsolved Problems / Future Features
 
 -Route Saving & Sharing: Currently, routes are not saved to user profiles. A future enhancement could include saving and sharing generated routes.
 
