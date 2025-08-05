@@ -1,18 +1,23 @@
 package com.example.scenic_spokes_backend.controllers;
 
 import com.example.scenic_spokes_backend.dto.GeneratedRouteDTO;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.web.server.ResponseStatusException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Locale;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -23,40 +28,70 @@ public class RouteGenerationController {
     private String tomtomApiKey;
 
     @GetMapping("/generate")
-    public ResponseEntity<GeneratedRouteDTO> generateRoute( //will return custom object to send to frontend
+    public ResponseEntity<GeneratedRouteDTO> generateRoute(
             @RequestParam double startLat,
             @RequestParam double startLng,
             @RequestParam double endLat,
             @RequestParam double endLng) {
 
-        String url = String.format( //constructs the tomtom api url with hardcoded query parameters for travel mode, route type, hilliness, and windingness
-                "https://api.tomtom.com/routing/1/calculateRoute/%f,%f:%f,%f/json"
-                        + "?key=%s&travelMode=motorcycle&hilliness=high&windingness=strong&routeType=thrilling",
+        // 2) Build TomTom URL (use Locale.US to ensure '.' decimal separator)
+        String url = String.format(
+                Locale.US,
+                "https://api.tomtom.com/routing/1/calculateRoute/%f,%f:%f,%f/json" +
+                        "?key=%s&routeType=thrilling&hilliness=high&windingness=high&travelMode=motorcycle",
                 startLat, startLng, endLat, endLng, tomtomApiKey
         );
 
-        RestTemplate restTemplate = new RestTemplate(); //creates the rest template to make the request to tomtom
-        Map<String, Object> response = restTemplate.getForObject(url, Map.class); //gets the response and parses it into Map
+        RestTemplate restTemplate = new RestTemplate();
 
-        List<Map<String, Object>> routes = (List<Map<String, Object>>) response.get("routes"); //these extract the data we want from the tomtom response to only get the info we need
-        Map<String, Object> firstRoute = routes.get(0);
-        List<Map<String, Object>> legs = (List<Map<String, Object>>) firstRoute.get("legs");
-        Map<String, Object> firstLeg = legs.get(0);
-        List<Map<String, Double>> points = (List<Map<String, Double>>) firstLeg.get("points");
+        try {
+            // call tomtom, if no body return custom http response
+            JsonNode body = restTemplate.getForObject(url, JsonNode.class);
+            if (body == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Empty response from TomTom.");
+            }
+            // parse the first route
+            JsonNode route = body.path("routes").get(0);
+            if (route == null || route.isMissingNode()) {
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "No routes returned by TomTom.");
+            }
+            JsonNode leg = route.path("legs").get(0);
+            JsonNode points = leg.path("points");
 
-        List<List<Double>> coords = points.stream()
-                .map(p -> List.of(p.get("latitude"), p.get("longitude")))
-                .collect(Collectors.toList()); //converts the points into a format that leaflet needs
+            // build latitude and longitude pairs for leaflet
+            List<List<Double>> coords = new ArrayList<>();
+            for (JsonNode p : points) {
+                coords.add(List.of(
+                        p.path("latitude").asDouble(),
+                        p.path("longitude").asDouble()
+                ));
+            }
+            // retrieve distance and time of route
+            JsonNode summary = route.path("summary");
+            double distanceKm = summary.path("lengthInMeters").asDouble() / 1000.0;
+            int estimatedTimeMin = (int) Math.round(summary.path("travelTimeInSeconds").asDouble() / 60.0);
 
-        Map<String, Object> summary = (Map<String, Object>) firstRoute.get("summary");
-        double distanceKm = ((Number) summary.get("lengthInMeters")).doubleValue() / 1000; //extracting distance and time from the response to display to the user on the frontend
-        int timeMin = ((Number) summary.get("travelTimeInSeconds")).intValue() / 60;
+            // build the dto
+            GeneratedRouteDTO dto = new GeneratedRouteDTO();
+            dto.setCoordinates(coords);
+            dto.setDistanceKm(distanceKm);
+            dto.setEstimatedTimeMin(estimatedTimeMin);
 
-        GeneratedRouteDTO dto = new GeneratedRouteDTO(); //builds a new generated route DTO
-        dto.setCoordinates(coords);
-        dto.setDistanceKm(distanceKm);
-        dto.setEstimatedTimeMin(timeMin);
+            return ResponseEntity.ok(dto);
 
-        return ResponseEntity.ok(dto); //returns the dto to the frontend
+        } catch (HttpClientErrorException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "TomTom rejected request: " + e.getResponseBodyAsString(),
+                    e
+            );
+        } catch (RestClientException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Route provider error. Please try again.",
+                    e
+            );
+        }
     }
 }
+
