@@ -57,7 +57,7 @@ tomtom.api.key=your_tomtom_api_key
    
 ./mvnw spring-boot:run
 
-###Frontend Setup (React + Vite)
+### Frontend Setup (React + Vite)
 
 1. **Navigate to the frontend directory**
 
@@ -89,7 +89,7 @@ https://miro.com/app/board/uXjVIzJXSbA=/?share_link_id=450465184892
 
 https://www.figma.com/board/Y7dF4uvN19IQPmqjDj2gIG/ER-Diagram---Scenic-Spokes?node-id=0-1&t=ebIKvsEMSKiLjzsC-1
 
-##Unsolved Problems / Future Features
+## Unsolved Problems / Future Features
 
 -Route Saving & Sharing: Currently, routes are not saved to user profiles. A future enhancement could include saving and sharing generated routes.
 
