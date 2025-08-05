@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 
+//rest template for external api calls
 @Configuration
 public class RestTemplateConfig {
     @Bean

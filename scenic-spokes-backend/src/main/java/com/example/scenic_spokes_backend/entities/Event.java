@@ -26,6 +26,6 @@ public class Event {
     private String image;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private AppUser user;
+    @JoinColumn(name = "app_user_id")
+    private AppUser appUser;
 }

@@ -37,8 +37,4 @@ public class AppUser {
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private final List<Event> events = new ArrayList<>();
-
-    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private final List<MotorcycleRoute> routes = new ArrayList<>();
 }

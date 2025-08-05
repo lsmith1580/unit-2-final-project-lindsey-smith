@@ -25,7 +25,7 @@ public class ClerkWebhookUserDTO {
         private List<EmailAddress> email_addresses;
 
         @Data
-        public static class EmailAddress {
+        public static class EmailAddress { //some of clerk's data is nested so had to set up my dto to account for that
             private String email_address;
         }
     }

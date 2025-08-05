@@ -39,7 +39,6 @@ public class AppUserWebhookController {
                 log.warn("Webhook has invalid user data");
                 return ResponseEntity.ok().build();
             }
-
             //create or update the user
             saveOrUpdateUser(userData);
 
