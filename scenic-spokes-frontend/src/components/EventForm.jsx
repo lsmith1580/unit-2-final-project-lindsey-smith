@@ -150,9 +150,11 @@ const EventForm = ({ editingEvent = null, onComplete }) => {
           onChange={handleChange}
           required
         />
-        <Button type="submit">
-          {editingEvent ? "Update Event" : "Add Event"}
-        </Button>
+        <div className="button-wrapper">
+          <Button type="submit">
+            {editingEvent ? "Update Event" : "Add Event"}
+          </Button>
+        </div>
       </form>
     </div>
   );

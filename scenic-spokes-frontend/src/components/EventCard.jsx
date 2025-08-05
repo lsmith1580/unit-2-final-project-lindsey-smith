@@ -53,7 +53,7 @@ const EventCard = ({ event, onEdit, onDeleteComplete }) => {
             <Button variant="secondary" onClick={() => onEdit(event)}>
               Edit
             </Button>
-            <Button variant="danger" onClick={() => setShowConfirm(true)}>
+            <Button variant="secondary" onClick={() => setShowConfirm(true)}>
               Delete
             </Button>
           </div>
