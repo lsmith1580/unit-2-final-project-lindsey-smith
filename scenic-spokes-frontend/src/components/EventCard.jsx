@@ -3,6 +3,7 @@ import Button from "./Button";
 import ConfirmModal from "./ConfirmModal";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAuth } from "@clerk/clerk-react";
 
 const EventCard = ({ event, onEdit, onDeleteComplete }) => {
   const { getToken } = useAuth();
@@ -26,6 +27,8 @@ const EventCard = ({ event, onEdit, onDeleteComplete }) => {
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return "";
+
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US"); //formats the date
   };

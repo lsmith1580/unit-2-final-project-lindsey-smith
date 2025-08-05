@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -11,15 +11,22 @@ const EventForm = ({ editingEvent = null, onComplete }) => {
   const { openSignIn } = useSignIn();
 
   const [formData, setFormData] = useState({
-    title: editingEvent?.title || "",
-    date: editingEvent?.date || "",
-    description: editingEvent?.description || "",
+    title: "",
+    date: "",
+    description: "",
   }); //state variable for form data with default values of empty strings
-  //editingEvent is used to determine whether the form is creating a new event or editing an existing one
-  //The ?. operator is used to access properties of editingEvent without throwing an error if null
-
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(editingEvent?.image || null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    setFormData({
+      title: editingEvent?.title || "", //editingEvent is used to determine whether the form is creating a new event or editing an existing one
+      date: editingEvent?.date || "", //The ?. operator is used to access properties of editingEvent without throwing an error if null
+      description: editingEvent?.description || "",
+    });
+    setImagePreview(editingEvent?.image || null);
+    setImageFile(null);
+  }, [editingEvent]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,14 +37,25 @@ const EventForm = ({ editingEvent = null, onComplete }) => {
   }; //shows any changes in the values of the form while a user is updating it
 
   const handleImageSelection = (e) => {
-    //function that gets and stores selected image file for use later in handleSubmit function
-    const file = e.target.files[0]; //and creates preview image url
-    setImageFile(file);
+    const file = e.target.files[0];
 
     if (file) {
+      // Check file size
+      const maxSize = 10 * 1024 * 1024; // can't be bigger than 10MB
+
+      if (file.size > maxSize) {
+        toast.error("File size must be less than 10MB");
+        e.target.value = "";
+        setImageFile(null);
+        setImagePreview(null);
+        return;
+      }
+
+      setImageFile(file);
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
     } else {
+      setImageFile(null);
       setImagePreview(null);
     }
   };
@@ -85,6 +103,7 @@ const EventForm = ({ editingEvent = null, onComplete }) => {
       setFormData({ title: "", date: "", description: "" });
       setImageFile(null);
       setImagePreview(null);
+      onComplete?.(); //refresh list
     } catch (error) {
       console.error("Error submitting event: ", error);
       toast.error("Failed to create event.");
