@@ -9,6 +9,8 @@ const EventCard = ({ event, onEdit, onDeleteComplete }) => {
   const { getToken } = useAuth();
   const [showConfirm, setShowConfirm] = useState(false); //state variable to keep track of whether to show confirm modal
 
+  const owned = event.isUserEvent ?? event.userEvent;
+
   const handleDelete = async () => {
     try {
       const token = await getToken();
@@ -46,7 +48,7 @@ const EventCard = ({ event, onEdit, onDeleteComplete }) => {
         <p>{formatDate(event.date)}</p>
         <p>{event.description}</p>
         {/*if user event allow the option to delete, if clicked show confirm modal*/}
-        {event.isUserEvent && (
+        {owned && (
           <div className="button-group">
             <Button variant="secondary" onClick={() => onEdit(event)}>
               Edit
