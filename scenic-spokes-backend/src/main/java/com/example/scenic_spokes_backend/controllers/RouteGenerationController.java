@@ -34,7 +34,7 @@ public class RouteGenerationController {
             @RequestParam double endLat,
             @RequestParam double endLng) {
 
-        // 2) Build TomTom URL (use Locale.US to ensure '.' decimal separator)
+        // build the tomtom url used to calculate route with desired parameters
         String url = String.format(
                 Locale.US,
                 "https://api.tomtom.com/routing/1/calculateRoute/%f,%f:%f,%f/json" +
